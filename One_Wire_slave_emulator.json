@@ -1,0 +1,31 @@
+{
+  "name": "One_Wire_Emulator",
+  "version": "1.0.0",
+  "description": "Emulator for OneWireHub device with packet-based command handling",
+  "keywords": [
+    "onewire",
+    "emulator",
+    "embedded",
+    "sensor",
+    "protocol"
+  ],
+  "authors": [
+    {
+      "name": "Andriy",
+      "email": "",
+      "url": ""
+    }
+  ],
+  "license": "MIT",
+  "frameworks": "arduino",
+  "platforms": "*",
+
+  "dependencies": {
+    "orgname/OneWireHub": "*"
+  },
+
+  "build": {
+    "includeDir": "include",
+    "srcDir": "src"
+  }
+}
