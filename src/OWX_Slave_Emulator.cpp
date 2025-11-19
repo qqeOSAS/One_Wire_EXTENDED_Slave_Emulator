@@ -1,4 +1,4 @@
-#include <One_Wire_Emulator.h>
+#include <OWX_Slave_Emulator.h>
 #include <Arduino.h>
 
 Emulator::Emulator(uint8_t ID1, uint8_t ID2, uint8_t ID3, uint8_t ID4,
