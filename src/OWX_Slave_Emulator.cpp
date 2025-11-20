@@ -31,8 +31,6 @@ uint8_t crc8_local(const uint8_t *data, size_t len, uint8_t crc_init = 0) {
     return crc;
 }
 
-
-
 void Emulator::send_packet(uint8_t cmd, uint8_t* data, uint8_t len, OneWireHub *hub)
 {
     // ---------------- CRC preparation ----------------
@@ -76,12 +74,11 @@ void Emulator::duty(OneWireHub *hub)
 
 
     switch(low_cmd){
-        case OW_CMD_REQUEST:
-             Serial.println(F("Request received, sending scratchpad..."));
-            for(uint8_t i=0; i<scratchpadLen; i++) {
-                hub->send(&scratchpad[i], 1);
-                Serial.printf("Sending byte %02X\n", scratchpad[i]);
-            }
+        case OW_READ_SCRATCHPAD:
+            Serial.println(F("OW_READ_SCRATCHPAD command received"));
+            for(uint8_t i=0; i<scratchpadLen; i++)
+                hub->send(&scratchpad[i], 1); // надсилаємо байт за байтом
+
         break;
         
         case OW_LOW_CMD_SEND_VARIABLE_:
@@ -211,12 +208,7 @@ bool Emulator::processCommand(uint8_t cmd, const uint8_t *payload, uint8_t len, 
             break;
 
         case OW_CMD_STRUCT:
-            rawBufferLen = (len > sizeof(rawBuffer)) ? sizeof(rawBuffer) : len;
-            memcpy(rawBuffer, payload, rawBufferLen);
-            lastDataType = DATA_STRUCT;
-            dataAvailable = true;
-            Serial.print(F("Received STRUCT, length: ")); Serial.println(rawBufferLen);
-            handled = true;
+    
             break;
 
         default:

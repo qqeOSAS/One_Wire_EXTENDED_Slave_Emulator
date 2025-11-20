@@ -16,7 +16,7 @@
 #define OW_CMD_CHAR8       0x13  // payload: 1 byte (char)
 #define OW_CMD_STRUCT      0x14  
 
-#define OW_CMD_REQUEST     0x20  
+#define OW_READ_SCRATCHPAD     0x20  
 #define OW_CMD_ACK         0x30 
 #define OW_CMD_NACK        0x31  
 
@@ -40,7 +40,6 @@ public:
 private:
     uint8_t scratchpadLen;
     uint8_t scratchpad[9];
-    uint8_t rawBuffer[32];
     uint8_t rawBufferLen;
     uint8_t lastCommand;
 
@@ -93,7 +92,6 @@ public:
 
     const uint8_t* getScratchpad() const;
 };
-
 
 
 //
