@@ -18,7 +18,9 @@
 
 #define OW_READ_SCRATCHPAD     0x20  
 #define OW_CMD_ACK         0x30 
-#define OW_CMD_NACK        0x31  
+
+
+#define OW_SCRATCHPAD_SIZE 9  // розмір scratchpad в байтах
 
 // [CMD SEND_VARIABLE | CMD_variable | LEN | PAYLOAD... | CRC8 ]
 //        1                   1         1       N           1
@@ -56,16 +58,15 @@ private:
     volatile DataType lastDataType;
 
     std::function<bool(uint8_t)> customHandler; // callback для кастомних команд
+    void read_variable_payload(OneWireHub *hub);
+    
 
 public:
     Emulator(uint8_t ID1, uint8_t ID2, uint8_t ID3, uint8_t ID4,
              uint8_t ID5, uint8_t ID6, uint8_t ID7);
 
     void duty(OneWireHub *hub);
-   // void setValue(int value);
-   // int getValue() const;
-// записує довільні дані в scratchpad
-    void writeScratchpad(const uint8_t* data, uint8_t len);
+    void writeScratchpad_byte(uint8_t* data, uint8_t len, uint8_t addr = 0);
 
     // --- нові функції ---
     uint8_t getLastCommand() const;
@@ -76,12 +77,10 @@ public:
     DataType availableType() const;
     void clearAvailable();
 
-    // new: process incoming command payload
-    bool processCommand(uint8_t cmd, const uint8_t *payload, uint8_t len, OneWireHub *hub);
+    bool process_specific_payload_Command(uint8_t cmd_data_type, const uint8_t *payload, uint8_t len, OneWireHub *hub);
     void send_packet(uint8_t cmd, uint8_t *data, uint8_t len, OneWireHub *hub);
 
 
-    // --- геттери для різних типів даних ---
     int8_t getInt8() const;
     uint8_t getUInt8() const;
     int16_t getInt16() const;
