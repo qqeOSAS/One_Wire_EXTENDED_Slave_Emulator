@@ -48,6 +48,9 @@ This enables a **distributed, modular architecture**, making it easy to scale th
 ---
 
 ## Installation
+You an find this library in offcial Platformio register by searching 'OneWire Extended Slave Emulator'.
+Or include it from github directly
+
 
 ### PlatformIO
 
