@@ -1,3 +1,27 @@
+
+/*
+           _____        ____  __        _                                         _       _             
+          / _ \ \      / /\ \/ /    ___| | __ ___   _____     ___ _ __ ___  _   _| | __ _| |_ ___  _ __ 
+         | | | \ \ /\ / /  \  /    / __| |/ _` \ \ / / _ \   / _ \ '_ ` _ \| | | | |/ _` | __/ _ \| '__|
+         | |_| |\ V  V /   /  \    \__ \ | (_| |\ V /  __/  |  __/ | | | | | |_| | | (_| | || (_) | |   
+          \___/  \_/\_/   /_/\_\___|___/_|\__,_| \_/ \___|___\___|_| |_| |_|\__,_|_|\__,_|\__\___/|_|   
+                              |_____|                   |_____|                                          
+
+    by qqeOSAS (https://github.com/qqeOSAS/One_Wire_EXTENDED_Slave_Emulator)
+    Library for emulationg OneWire devices with extended features.Its built over OneWireHub library to give more access to OneWire bus.
+    This library is  not coppying any existing OneWire device, but creates a virtual device that can communicate with a master using extended commands.
+    It create a flexible slave deveice that can receive various data types from the master and respond accordingly.
+
+        - Implements a OneWire device emulator.
+        - Supports sending and receiving various data types: int8, uint8, int16, uint16, int32, uint32, float32, and structures.
+        - Handles scratchpad memory and packet transmission with CRC8.
+        - Allows custom command handling via callback (`setCustomHandler`).
+        - API for checking new data availability (`available()`, `availableType()`, `clearAvailable()`).
+        - Easy access to the last received data through getters (`getInt8()`, `getFloat()`, etc.).
+        - Fully compatible with PlatformIO and Arduino/ESP8266.
+        - Easy integration with OneWireHub and other bus devices.
+*/
+
 #pragma once
 #include <Arduino.h>
 #include <OneWireHub.h>
