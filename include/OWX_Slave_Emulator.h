@@ -5,6 +5,7 @@
 #include <functional>
 
 // Packet command definitions
+
 #define OW_LOW_CMD_SEND_VARIABLE_ 0x01  // відправка змінної зі слейва
 #define OW_CMD_INT8        0x0F  // payload: 1 byte (int8_t)
 #define OW_CMD_UINT8       0x0C  // payload: 1 byte (uint8_t)
@@ -21,6 +22,8 @@
 
 
 #define OW_SCRATCHPAD_SIZE 9  // розмір scratchpad в байтах
+#define OW_MAX_PAYLOAD 32  // достатньо для типових payload; підлаштуй за потреби
+
 
 // [CMD SEND_VARIABLE | CMD_variable | LEN | PAYLOAD... | CRC8 ]
 //        1                   1         1       N           1
@@ -45,8 +48,8 @@ private:
     uint8_t rawBufferLen;
     uint8_t lastCommand;
 
-    // значення різних типів для отриманих пакетів
     int8_t int8_value;
+    uint8_t uint8_value;
     int16_t int16_value;
     uint16_t uint16_value;
     int32_t int32_value;
@@ -89,7 +92,7 @@ public:
     uint32_t getUInt32() const;
     float getFloat() const;
 
-    const uint8_t* getScratchpad() const;
+  
 };
 
 
