@@ -38,9 +38,6 @@ It creates a flexible slave device that can receive various data types and respo
 
 ## When to Use
 
-**Українською:**  
-
-
 This library is particularly useful in large or modular projects where the main controller has limited pins or resources.  
 For example, if the master controller lacks enough pins to handle all sensors or actuators, you can add several emulator slaves. Each slave processes its specific task and sends results back to the master.  
 This enables a **distributed, modular architecture**, making it easy to scale the system and simplifying testing.
