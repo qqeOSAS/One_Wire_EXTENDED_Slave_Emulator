@@ -21,8 +21,8 @@
 #define OW_CMD_ACK         0x30 
 
 
-#define OW_SCRATCHPAD_SIZE 9  // розмір scratchpad в байтах
-#define OW_MAX_PAYLOAD 32  // достатньо для типових payload; підлаштуй за потреби
+#define OW_SCRATCHPAD_SIZE 9 
+#define OW_MAX_PAYLOAD 32  
 
 
 // [CMD SEND_VARIABLE | CMD_variable | LEN | PAYLOAD... | CRC8 ]

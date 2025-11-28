@@ -1,10 +1,10 @@
 {
-  "name": "One_Wire_Emulator",
+  "name": "One_Wire_EXTENDED_Slave_Emulator",
   "version": "1.0.0",
-  "description": "Emulator for OneWireHub device with packet-based command handling",
+  "description": "Extended Emulator for OneWireHub device with packet-based command handling",
   "keywords": [
-    "onewire",
-    "emulator",
+    "onewire slave",
+    "emulator slave",
     "embedded",
     "sensor",
     "protocol"
@@ -12,7 +12,7 @@
   "authors": [
     {
       "name": "Andriy",
-      "email": "",
+      "email": "amanyuk3@gmail.com",
       "url": ""
     }
   ],
