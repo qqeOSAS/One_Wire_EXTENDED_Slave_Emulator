@@ -104,7 +104,7 @@ Example of wiring
                                                      └───────────────────────────────────────────────────────┘
 
 ```
-Pacet structure example
+Paket structure example
 ----------------------------
 ```
 
