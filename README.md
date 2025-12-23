@@ -72,40 +72,37 @@ lib_deps =
 
 Or install it from the PlatformIO Library Registry by searching for "OneWire Extended Slave Emulator".
 
-Quick example
+Quick example of wiring 
 -------------
-The following example shows a minimal sketch to initialize the emulator and read incoming data:
 
-```cpp
-#include <OneWireHub.h>
-#include <OneWireExtendedSlave.h> // adjust include to actual header name in the library
 
-OneWireHub hub(D2); // pin connected to the OneWire bus
-OneWireExtendedSlave slave;
+```
+    Example of wiring OWX master with multiple OWX slaves:
+                     ┌────────────────────────────────────────────────┐
+                     │               One Wire Master                  ├─── GND -------------------- GND (Slave1)
+                     │                                                │                            GND (Slave2)
+                     │                                                ├─── VCC -------------------------------- VCC (Slave1)
+                     │                                                │                                         VCC (Slave2)
+                     │                                                ├─── DQ |──[4.7kΩ]─── VCC
+                     └────────────────────────────────────────────────|       |
+                                                                              │
+                                    |----------------------------------------│ 1-Wire Bus (DQ)
+                                    |                                          
+                                    |
+                                    |                ┌─────────────────────── SLAVE 1 ───────────────────────┐
+                                    |                │                                                      │
+                                    |                │   GND ----------------------------------------------------------+
+                                    |                │   VCC ----------------------------------------------------------+
+                                    |----------------------------------DQ
+                                    |                └───────────────────────────────────────────────────────┘
+                                    |
+                                    |                ┌─────────────────────── SLAVE 2 ───────────────────────┐
+                                    |                │                                                      
+                                    |                │   GND ----------------------------------------------------------+
+                                    |                │   VCC ----------------------------------------------------------+
+                                    |-----------------------------+ DQ
+                                                     └───────────────────────────────────────────────────────┘
 
-void setup() {
-  Serial.begin(115200);
-  hub.begin();
-  slave.begin(&hub);
-  // Optionally register a custom handler:
-  // slave.setCustomHandler(myHandler);
-}
-
-void loop() {
-  if (slave.available()) {
-    int type = slave.availableType();
-    if (type == TYPE_INT32) {
-      int32_t val = slave.getInt32();
-      Serial.println(val);
-    } else if (type == TYPE_FLOAT32) {
-      float f = slave.getFloat();
-      Serial.println(f, 6);
-    }
-    slave.clearAvailable();
-  }
-
-  // your other code...
-}
 ```
 
 API (summary)
