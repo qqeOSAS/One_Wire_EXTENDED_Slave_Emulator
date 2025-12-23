@@ -2,9 +2,8 @@
 
 [![PlatformIO](https://img.shields.io/badge/PlatformIO-compatible-green)](https://platformio.org/)
 
-**Author:** qqeOSAS  
- [Platformio library register](https://registry.platformio.org/libraries/qqeosas/One_Wire_EXTENDED_Slave_Emulator/installation)
-
+Author: qqeOSAS  
+[PlatformIO Library Registry — OneWire Extended Slave Emulator](https://registry.platformio.org/libraries/qqeosas/One_Wire_EXTENDED_Slave_Emulator/installation)
 
 ---
 
@@ -16,46 +15,115 @@
                           |_____|                   |_____|
 
 
+Short description
+-----------------
+A library for emulating OneWire devices with extended features. This project does not replicate any specific physical OneWire device; instead it implements a virtual slave device that communicates with a master using extended commands and flexible data packets.
 
-**Library for emulating OneWire devices with extended features.**  
-Built over the OneWireHub library to give more access to the OneWire bus.  
-This library does **not copy any existing OneWire device**, but creates a **virtual device** that communicates with a master using extended commands.  
-It creates a flexible slave device that can receive various data types and respond accordingly.
-When buildign a project using OWX_Slave_emutor for a slave device i hightlu recomend you to use the OWX_master utils library link 
+Built on top of OneWireHub, this library gives more control over the OneWire bus and is useful for building modular or distributed systems where additional virtual peripherals are needed.
 
----
-
-## Features
-
-- Implements a OneWire device emulator.
-- Supports sending and receiving various data types: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `float32`, and structures.
-- Handles scratchpad memory and packet transmission with CRC8.
-- Allows custom command handling via callback (`setCustomHandler`).
-- API for checking new data availability: `available()`, `availableType()`, `clearAvailable()`.
-- Easy access to the last received data through getters: `getInt8()`, `getFloat()`, etc.
-- Fully compatible with PlatformIO and Arduino/ESP8266.
+Key features
+------------
+- Emulates a OneWire slave device.
+- Supports sending and receiving common data types: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `float32`, and custom structures.
+- Scratchpad memory handling and packet transfer with CRC8 integrity checks.
+- Custom command handling via callback: `setCustomHandler`.
+- Simple API to check and read new incoming data: `available()`, `availableType()`, `clearAvailable()`.
+- Getters for last received data: `getInt8()`, `getFloat()`, etc.
+- Compatible with PlatformIO, Arduino, ESP8266 and similar platforms.
 - Easy integration with OneWireHub and other bus devices.
 
----
+When to use this library
+------------------------
+Use this library when you want to add virtual OneWire slaves to a system — for example, to expand the number of sensors/actuators without adding more GPIOs on the master controller. Each virtual slave can execute its own logic and return results to the master, enabling a distributed and modular architecture that is easy to scale and test.
 
-## When to Use
+Recommendation — OWX_master utilities (important)
+-------------------------------------------------
+When developing a project that uses the OWX_Slave_emulator on the slave side, I strongly recommend using a companion master-side utility library — OWX_master (or similar utilities). These utilities simplify command creation, packet parsing, and general master-slave interaction.
 
-This library is particularly useful in large or modular projects where the main controller has limited pins or resources.  
-For example, if the master controller lacks enough pins to handle all sensors or actuators, you can add several emulator slaves. Each slave processes its specific task and sends results back to the master.  
-This enables a **distributed, modular architecture**, making it easy to scale the system and simplifying testing.
+Why use OWX_master utilities:
+- They reduce manual packet-building and parsing code on the master.
+- They help ensure correct CRC and message formatting.
+- They speed up development and reduce common integration bugs.
 
----
+How to use:
+- If you maintain a local repository with OWX_master utilities, add it as a dependency in your PlatformIO project.
+- If you prefer an already published solution, check PlatformIO Library Registry or GitHub (search for OWX_master or visit my account: qqeOSAS) for available master-side utilities.
+- Using OWX_master is not required, but it is highly recommended for robust and maintainable master-slave communication.
 
-## Installation
-You an find this library in offcial Platformio register by searching `OneWire Extended Slave Emulator`
+Installation
+------------
+You can install this library using PlatformIO.
 
-Or include it from github directly
-
-
-### PlatformIO
-
+PlatformIO:
 Add to your `platformio.ini` under `lib_deps`:
 
 ```ini
 lib_deps =
+    https://github.com/qqeOSAS/One_Wire_EXTENDED_Slave_Emulator.git
+```
+
+Or install it from the PlatformIO Library Registry by searching for "OneWire Extended Slave Emulator".
+
+Quick example
+-------------
+The following example shows a minimal sketch to initialize the emulator and read incoming data:
+
+```cpp
+#include <OneWireHub.h>
+#include <OneWireExtendedSlave.h> // adjust include to actual header name in the library
+
+OneWireHub hub(D2); // pin connected to the OneWire bus
+OneWireExtendedSlave slave;
+
+void setup() {
+  Serial.begin(115200);
+  hub.begin();
+  slave.begin(&hub);
+  // Optionally register a custom handler:
+  // slave.setCustomHandler(myHandler);
+}
+
+void loop() {
+  if (slave.available()) {
+    int type = slave.availableType();
+    if (type == TYPE_INT32) {
+      int32_t val = slave.getInt32();
+      Serial.println(val);
+    } else if (type == TYPE_FLOAT32) {
+      float f = slave.getFloat();
+      Serial.println(f, 6);
+    }
+    slave.clearAvailable();
+  }
+
+  // your other code...
+}
+```
+
+API (summary)
+-------------
+- begin(...) — initialize the slave.
+- setCustomHandler(callback) — set a custom command handler.
+- available(), availableType(), clearAvailable() — check and manage incoming data state.
+- getInt8(), getUint16(), getFloat(), getStruct() — getters for received data.
+
+See the library's header files and examples for full API details.
+
+Tips
+----
+- Always validate CRC8 for packets to ensure integrity.
+- Prefer using OWX_master utilities on the master side for reliable message formatting and parsing.
+- Create small test slaves first to validate communication before integrating into a larger system.
+
+Contributing and support
+------------------------
+Issues and pull requests are welcome. Please open an issue to report bugs or request features.
+
+License
+-------
+Specify your project license here (for example, MIT).
+
+---
+
+If you want, I can also add a short example for the OWX_master utilities or prepare a PlatformIO example project that demonstrates both master and slave usage.
     https://github.com/qqeOSAS/One_Wire_EXTENDED_Slave_Emulator.git
