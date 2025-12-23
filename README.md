@@ -21,22 +21,6 @@ A library for emulating OneWire devices with extended features. This project doe
 
 Built on top of OneWireHub, this library gives more control over the OneWire bus and is useful for building modular or distributed systems where additional programed peripherals are needed in one GPIO.
 
-Key features
-------------
-- Emulates a OneWire slave device.
-- Supports sending and receiving common data types: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `float32`, and custom structures.
-- Scratchpad memory handling and packet transfer with CRC8 integrity checks.
-- Custom command handling via callback: `setCustomHandler`.
-- Simple API to check and read new incoming data: `available()`, `availableType()`, `clearAvailable()`.
-- Getters for last received data: `getInt8()`, `getFloat()`, etc.
-- Compatible with PlatformIO, Arduino, ESP8266 and similar platforms.
-- Easy integration with OneWireHub and other bus devices.
-
-When to use this library
-------------------------
-This library is particularly useful in large or modular projects where the main controller has limited pins or resources.  
-For example, if the master controller lacks enough pins to handle all sensors or actuators, you can add several emulator slaves. Each slave processes its specific task and sends results back to the master.  
-This enables a **distributed, modular architecture**, making it easy to scale the system and simplifying testing.
 
 Idea of the library
 ----------------------------
@@ -45,19 +29,34 @@ This allows you to offload work from the main controller, reducing its processin
 
 Each OneWire slave can act as an intelligent node, processing data, reacting to commands, and returning only the required results to the master.
 
+
+When to use this library
+------------------------
+This library is particularly useful in large or modular projects where the main controller has limited pins or resources.  
+For example, if the master controller lacks enough pins to handle all sensors or actuators, you can add several emulator slaves. Each slave processes its specific task and sends results back to the master.  
+This enables a **distributed, modular architecture**, making it easy to scale the system and simplifying testing.
+
+
+
+
+Key features
+------------
+- Creates smart OneWire slave device.
+- Supports sending and receiving common data types: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `float32`, and custom structures.
+- Scratchpad memory handling and packet transfer with CRC8 integrity checks.
+- Custom command handling via callback: `setCustomHandler`.
+- Simple API to check and read new incoming data: `available()`, `availableType()`, `clearAvailable()`.
+- Getters for last received data: `getInt8()`, `getFloat()`, etc.
+- Compatible with PlatformIO, Arduino, ESP8266 and similar platforms.
+- Easy integration with OneWireHub and other bus devices.
+
+
+
+
 Recommendation — OWX_master utilities (important)
 -------------------------------------------------
-When developing a project that uses the OWX_Slave_emulator on the slave side, I strongly recommend using a companion master-side utility library — OWX_master (or similar utilities). These utilities simplify command creation, packet parsing, and general master-slave interaction.
-
-Why use OWX_master utilities:
-- They reduce manual packet-building and parsing code on the master.
-- They help ensure correct CRC and message formatting.
-- They speed up development and reduce common integration bugs.
-
-How to use:
-- If you maintain a local repository with OWX_master utilities, add it as a dependency in your PlatformIO project.
-- If you prefer an already published solution, check PlatformIO Library Registry or GitHub (search for OWX_master or visit my account: qqeOSAS) for available master-side utilities.
-- Using OWX_master is not required, but it is highly recommended for robust and maintainable master-slave communication.
+When developing a project that uses the OWX_Slave_emulator on the slave side, I strongly recommend using a companion master-side utility library — OWX_master.Its not nessesary but these utilities simplify command creation, packet parsing, and general master-slave interaction.
+link to [OWX_Master_utils]()
 
 Installation
 ------------
