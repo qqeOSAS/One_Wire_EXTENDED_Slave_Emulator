@@ -72,7 +72,7 @@ lib_deps =
 
 Or install it from the PlatformIO Library Registry by searching for "OneWire Extended Slave Emulator".
 
-Quick example of wiring 
+Example of wiring 
 -------------
 
 
@@ -104,6 +104,25 @@ Quick example of wiring
                                                      └───────────────────────────────────────────────────────┘
 
 ```
+Pacet structure example
+----------------------------
+```
+
+    ┌──────────────────────────────────────────────────────────────────────────────┐
+    │                         OWX PACKET FORMAT (SLAVE → MASTER)                   │
+    ├──────────────────────────────────────────────────────────────────────────────┤
+    │ [ CMD_SEND_VARIABLE |  CMD_data_type |  LEN  |  PAYLOAD (N bytes)  |  CRC8 ] │  
+    │       (1 byte)           (1 byte)     (1 byte)     (N bytes)    (1 byte)     │
+    ├──────────────────────────────────────────────────────────────────────────────┤
+    │  Example: 0x01 | 0x0F | 0x01 | 0x7A | CRC                                    │
+    │           │       │       │       └── payload (e.g. one int8)                │
+    │           │       │       └────────── length in bytes                        │
+    │           │       └────────────────── command describing data type           │
+    │           └────────────────────────── main command "send variable"           │
+    └──────────────────────────────────────────────────────────────────────────────┘
+
+
+```
 
 API (summary)
 -------------
@@ -114,11 +133,6 @@ API (summary)
 
 See the library's header files and examples for full API details.
 
-Tips
-----
-- Always validate CRC8 for packets to ensure integrity.
-- Prefer using OWX_master utilities on the master side for reliable message formatting and parsing.
-- Create small test slaves first to validate communication before integrating into a larger system.
 
 Contributing and support
 ------------------------
@@ -126,9 +140,8 @@ Issues and pull requests are welcome. Please open an issue to report bugs or req
 
 License
 -------
-Specify your project license here (for example, MIT).
+MIT
 
 ---
 
-If you want, I can also add a short example for the OWX_master utilities or prepare a PlatformIO example project that demonstrates both master and slave usage.
-    https://github.com/qqeOSAS/One_Wire_EXTENDED_Slave_Emulator.git
+
