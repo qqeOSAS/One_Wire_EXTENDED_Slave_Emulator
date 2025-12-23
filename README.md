@@ -3,7 +3,8 @@
 [![PlatformIO](https://img.shields.io/badge/PlatformIO-compatible-green)](https://platformio.org/)
 
 **Author:** qqeOSAS  
-**Platformio register** (https://registry.platformio.org/libraries/qqeosas/One_Wire_EXTENDED_Slave_Emulator/installation)
+**Platformio register** [https://registry.platformio.org/libraries/qqeosas/One_Wire_EXTENDED_Slave_Emulator/installation]
+
 
 ---
 
