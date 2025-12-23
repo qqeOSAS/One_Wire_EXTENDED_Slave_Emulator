@@ -21,6 +21,7 @@
 Built over the OneWireHub library to give more access to the OneWire bus.  
 This library does **not copy any existing OneWire device**, but creates a **virtual device** that communicates with a master using extended commands.  
 It creates a flexible slave device that can receive various data types and respond accordingly.
+When buildign a project using OWX_Slave_emutor for a slave device i hightlu recomend you to use the OWX_master utils library link 
 
 ---
 
