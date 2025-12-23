@@ -34,7 +34,16 @@ Key features
 
 When to use this library
 ------------------------
-Use this library when you want to add virtual OneWire slaves to a system — for example, to expand the number of sensors/actuators without adding more GPIOs on the master controller. Each virtual slave can execute its own logic and return results to the master, enabling a distributed and modular architecture that is easy to scale and test.
+This library is particularly useful in large or modular projects where the main controller has limited pins or resources.  
+For example, if the master controller lacks enough pins to handle all sensors or actuators, you can add several emulator slaves. Each slave processes its specific task and sends results back to the master.  
+This enables a **distributed, modular architecture**, making it easy to scale the system and simplifying testing.
+
+Idea of the library
+----------------------------
+Basically, you can create a smart OneWire system where slave devices are fully programmable and can handle their own logic.
+This allows you to offload work from the main controller, reducing its processing load and simplifying the master-side firmware.
+
+Each OneWire slave can act as an intelligent node, processing data, reacting to commands, and returning only the required results to the master.
 
 Recommendation — OWX_master utilities (important)
 -------------------------------------------------
