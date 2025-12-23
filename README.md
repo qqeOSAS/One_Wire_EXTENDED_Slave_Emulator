@@ -19,7 +19,7 @@ Short description
 -----------------
 A library for emulating OneWire devices with extended features. This project does not replicate any specific physical OneWire device; instead it implements a virtual slave device that communicates with a master using extended commands and flexible data packets.
 
-Built on top of OneWireHub, this library gives more control over the OneWire bus and is useful for building modular or distributed systems where additional virtual peripherals are needed.
+Built on top of OneWireHub, this library gives more control over the OneWire bus and is useful for building modular or distributed systems where additional programed peripherals are needed in one GPIO.
 
 Key features
 ------------
