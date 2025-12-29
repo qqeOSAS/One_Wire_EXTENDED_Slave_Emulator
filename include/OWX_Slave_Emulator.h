@@ -22,6 +22,39 @@
         - Easy integration with OneWireHub and other bus devices.
 */
 
+/*
+    Example of wiring OWX master with multiple OWX slaves:
+                     ┌────────────────────────────────────────────────┐
+                     │               One Wire Master                  ├─── GND -------------------- GND (Slave1)
+                     │                                                │                            GND (Slave2)
+                     │                                                ├─── VCC -------------------------------- VCC (Slave1)
+                     │                                                │                                         VCC (Slave2)
+                     │                                                ├─── DQ |──[4.7kΩ]─── VCC
+                     └────────────────────────────────────────────────|       |
+                                                                              │
+                                    |----------------------------------------│ 1-Wire Bus (DQ)
+                                    |                                          
+                                    |
+                                    |                ┌─────────────────────── SLAVE 1 ───────────────────────┐
+                                    |                │                                                      │
+                                    |                │   GND ----------------------------------------------------------+
+                                    |                │   VCC ----------------------------------------------------------+
+                                    |----------------------------------DQ
+                                    |                └───────────────────────────────────────────────────────┘
+                                    |
+                                    |                ┌─────────────────────── SLAVE 2 ───────────────────────┐
+                                    |                │                                                      
+                                    |                │   GND ----------------------------------------------------------+
+                                    |                │   VCC ----------------------------------------------------------+
+                                    |-----------------------------+ DQ
+                                                     └───────────────────────────────────────────────────────┘
+
+
+
+
+
+
+*/
 #pragma once
 #include <Arduino.h>
 #include <OneWireHub.h>
@@ -41,6 +74,9 @@
 #define OW_CMD_CHAR8       0x13  // payload: 1 byte (char)
 #define OW_CMD_STRUCT      0x14  
 
+#define OW_HANDLER_COMMAND 0xFF // користувацька команда для обробки користувацьким обробником
+
+
 #define OW_READ_SCRATCHPAD     0x20  
 #define OW_CMD_ACK         0x30 
 
@@ -49,8 +85,32 @@
 #define OW_MAX_PAYLOAD 32  
 
 
-// [CMD SEND_VARIABLE | CMD_variable | LEN | PAYLOAD... | CRC8 ]
-//        1                   1         1       N           1
+/*
+    ┌──────────────────────────────────────────────────────────────────────────────┐
+    │                    OWX data PACKET FORMAT (SLAVE → MASTER)                   │
+    ├──────────────────────────────────────────────────────────────────────────────┤
+    │ [ CMD_SEND_VARIABLE |  CMD_data_type |  LEN  |  PAYLOAD (N bytes)  |  CRC8 ] │  
+    │       (1 byte)           (1 byte)     (1 byte)     (N bytes)    (1 byte)     │
+    ├──────────────────────────────────────────────────────────────────────────────┤
+    │  Example: 0x01 | 0x0F | 0x01 | 0x7A | CRC                                    │
+    │           │       │       │       └── payload (e.g. one int8)                │
+    │           │       │       └────────── length in bytes                        │
+    │           │       └────────────────── command describing data type           │
+    │           └────────────────────────── main command "send variable"           │
+    └──────────────────────────────────────────────────────────────────────────────┘
+*/
+
+/* 
+    ┌──────────────────────────────────────────────────────────────────────────────┐
+    |                      OWX  HANDLER COMMAND FORMAT                             |
+    |______________________________________________________________________________|
+    |     [   CMD_HANDLER_COMMAND 0xFF ] │           [   CMD  ]                    |
+    |            (1 byte)                │          (1 byte)                       |
+    |____________________________________|_________________________________________|
+
+
+ */
+
 
 class Emulator : public OneWireItem
 {
@@ -86,6 +146,7 @@ private:
 
     std::function<bool(uint8_t)> customHandler; // callback для кастомних команд
     void read_variable_payload(OneWireHub *hub);
+    void parse_handler_command(OneWireHub *hub);
     
 
 public:
@@ -94,6 +155,14 @@ public:
 
     void duty(OneWireHub *hub);
     void writeScratchpad_byte(uint8_t* data, uint8_t len, uint8_t addr = 0);
+    void wite_int16_to_scratchpad(int16_t value, uint8_t addr = 0);
+    void writeScratchpad_int8(int8_t value, uint8_t addr = 0);
+    void writeScratchpad_uint8(uint8_t value, uint8_t addr = 0);
+    void writeScratchpad_int16(int16_t value, uint8_t addr = 0);
+    void writeScratchpad_uint16(uint16_t value, uint8_t addr = 0);
+    void writeScratchpad_int32(int32_t value, uint8_t addr = 0);
+    void writeScratchpad_uint32(uint32_t value, uint8_t addr = 0);
+    void writeScratchpad_float(float value, uint8_t addr = 0);
 
     // --- нові функції ---
     uint8_t getLastCommand() const;

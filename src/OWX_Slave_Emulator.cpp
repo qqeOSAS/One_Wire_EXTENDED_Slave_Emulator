@@ -76,6 +76,42 @@ void Emulator::writeScratchpad_byte(uint8_t* data, uint8_t len, uint8_t addr) {
         scratchpad[addr + i] = data[i];
 }
 
+
+// Writes an int8_t value into the scratchpad at a specific offset
+void Emulator::writeScratchpad_int8(int8_t value, uint8_t addr) {
+    writeScratchpad_byte(reinterpret_cast<uint8_t*>(&value), sizeof(int8_t), addr);
+}
+
+// Writes a uint8_t value into the scratchpad at a specific offset
+void Emulator::writeScratchpad_uint8(uint8_t value, uint8_t addr) {
+    writeScratchpad_byte(&value, sizeof(uint8_t), addr);
+}
+
+// Writes an int16_t value into the scratchpad at a specific offset
+void Emulator::writeScratchpad_int16(int16_t value, uint8_t addr) {
+    writeScratchpad_byte(reinterpret_cast<uint8_t*>(&value), sizeof(int16_t), addr);
+}
+
+// Writes a uint16_t value into the scratchpad at a specific offset
+void Emulator::writeScratchpad_uint16(uint16_t value, uint8_t addr) {
+    writeScratchpad_byte(reinterpret_cast<uint8_t*>(&value), sizeof(uint16_t), addr);
+}
+
+// Writes an int32_t value into the scratchpad at a specific offset
+void Emulator::writeScratchpad_int32(int32_t value, uint8_t addr) {
+    writeScratchpad_byte(reinterpret_cast<uint8_t*>(&value), sizeof(int32_t), addr);
+}
+
+// Writes a uint32_t value into the scratchpad at a specific offset
+void Emulator::writeScratchpad_uint32(uint32_t value, uint8_t addr) {
+    writeScratchpad_byte(reinterpret_cast<uint8_t*>(&value), sizeof(uint32_t), addr);
+}
+
+// Writes a float value into the scratchpad at a specific offset
+void Emulator::writeScratchpad_float(float value, uint8_t addr) {
+    writeScratchpad_byte(reinterpret_cast<uint8_t*>(&value), sizeof(float), addr);
+}
+
 // Reads a structured payload: CMD + LEN + PAYLOAD + CRC
 void Emulator::read_variable_payload(OneWireHub *hub){
     uint8_t packet_header[2];
@@ -129,7 +165,21 @@ void Emulator::read_variable_payload(OneWireHub *hub){
         hub->send(&ack, 1);
     }
 }
+void parse_handler_command(OneWireHub *hub){
+    uint8_t handler_command;
 
+    if(hub->recv(&handler_command, 1)) return;
+
+    if(customHandler){
+        bool result = customHandler(handler_command);  // ✅ ОЦЕ ПРАВИЛЬНО
+
+        if(result){
+            uint8_t ack = OW_CMD_ACK;
+            hub->send(&ack, 1);
+        }
+    }
+    
+}
 // Main low-level dispatcher for incoming OneWire commands
 void Emulator::duty(OneWireHub *hub){
     uint8_t low_cmd;
@@ -149,6 +199,11 @@ void Emulator::duty(OneWireHub *hub){
             // Higher-level packet incoming
             read_variable_payload(hub);
             break;
+        case OW_HANDLER_COMMAND: 
+            // Custom handler command
+            parse_handler_command(hub);
+            break;
+            
 
         default:
             // Unknown low-level command (ignored)
@@ -238,26 +293,11 @@ bool Emulator::process_specific_payload_Command(
 
         // --- Fallback for custom user handlers ---
         default:
-            if(customHandler) {
-                handled = customHandler(cmd_data_type);
-                if(handled){
-                    Serial.print(F("Custom handler processed CMD: 0x"));
-                    Serial.println(cmd_data_type, HEX);
-                }
-            }
-
-            if(!handled){
-                // Report unknown/unsupported payload type
-                Serial.print(F("Unknown CMD: 0x"));
-                Serial.println(cmd_data_type, HEX);
-                hub->raiseDeviceError(cmd_data_type);
-            }
             break;
     }
-
     return handled;
-}
 
+}
 // --- Getters for decoded values ---
 int8_t Emulator::getInt8() const { return int8_value; }
 int16_t Emulator::getInt16() const { return int16_value; }
