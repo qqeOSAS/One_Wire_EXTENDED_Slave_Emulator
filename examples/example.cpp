@@ -32,6 +32,10 @@ Emulator slaveEmu(
     0x01,0x02,0x03,0x04,0x05,0x06,0x07
 );
 
+
+
+
+
 void setup() {
     Serial.begin(115200);
     delay(500);
@@ -42,6 +46,9 @@ void setup() {
     hub.attach(slaveEmu);
 
     Serial.println(F("Slave attached. Waiting for master commands...\n"));
+    slaveEmu.setCustomHandler(myCustomHandler);
+
+ 
 }
 
 void loop() {
@@ -92,7 +99,6 @@ void loop() {
 
             case Emulator::DATA_STRUCT:
                 Serial.println(F(" STRUCT received"));
-                // тут ти можеш розпарсити структуру
                 break;
 
             default:
@@ -103,19 +109,7 @@ void loop() {
         slaveEmu.clearAvailable();
     }
 
-    // Every 1s update scratchpad dynamically
-    static unsigned long tmr = 0;
-    unsigned long now = millis();
-    if (now - tmr >= 1000) {
-        tmr = now;
-
-        // Example: write random value into scratchpad[3]
-        uint8_t randomVal = random(0, 255);
-        slaveEmu.writeScratchpad_byte(&randomVal, 1, 3);
-
-        Serial.print(F("Scratchpad[3] updated with: "));
-        Serial.println(randomVal);
-    }
+  
 }
 
 
@@ -129,29 +123,20 @@ void loop() {
 
 ****************************************************************/
 
-bool customCommandHandler(uint8_t cmd) {
-    Serial.print(F("Custom CMD handled: 0x"));
-    Serial.println(cmd, HEX);
-    return true;  // command processed
+// Custom handler function for a single condition
+bool myCustomHandler(uint8_t cmd) {
+    Serial.print(F("[CUSTOM HANDLER] Command received: 0x"));
+    if (cmd == OW_REQUEST_UPDATE) {  
+        uint8_t random_uint8 = random(0,255);// Example custom command
+        uint16_t random_uint16 = random(0,65535);
+        float random_float = random(0,100) + random(0,99) / 100;
+        slaveEmu.writeScratchpad_uint8(random_uint8, 0); // Write value 42 at scratchpad[0]
+        slaveEmu.writeScratchpad_uint16(random_uint16, 1); // Write value 12345 at scratchpad[1-2]
+        slaveEmu.writeScratchpad_float(random_float, 3); // Write float at scratchpad[3-6]
+        // Serial.printf("Updated data uint8 %d, uint16 %d, float %.2f\n", random_uint8, random_uint16, random_float);
+                      
+        return true;  // Indicate the command was handled
+    }
+    return false;  // Command not recognized
 }
-
-// EXAMPLE STRUCT FORMAT (you can adjust):
-// struct MyStruct { int16_t temperature; uint16_t humidity; float voltage; };
-void parseStructExample(const uint8_t* data, uint8_t len) {
-    if(len < 8) return;
-
-    int16_t temperature;
-    uint16_t humidity;
-    float voltage;
-
-    memcpy(&temperature, data, 2);
-    memcpy(&humidity, data + 2, 2);
-    memcpy(&voltage, data + 4, 4);
-
-    Serial.print(F("STRUCT → Temp="));
-    Serial.print(temperature);
-    Serial.print(F(" Hum="));
-    Serial.print(humidity);
-    Serial.print(F(" V="));
-    Serial.println(voltage);
-}
+//wwewewefgitsdsdsdsdsd
