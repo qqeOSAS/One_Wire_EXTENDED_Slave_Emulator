@@ -56,7 +56,7 @@ Key features
 Recommendation — OWX_master utilities (important)
 -------------------------------------------------
 When developing a project that uses the OWX_Slave_emulator on the slave side, I strongly recommend using a companion master-side utility library — OWX_master.Its not nessesary but these utilities simplify command creation, packet parsing, and general master-slave interaction.
-link to [OWX_Master_utils]()
+link to [OWX_Master_utils](https://github.com/qqeOSAS/OWX_Master_utils)
 
 Installation
 ------------
